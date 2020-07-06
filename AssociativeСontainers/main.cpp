@@ -1,19 +1,36 @@
 #include<algorithm>
 #include<ctime>
+#include<fstream>
 #include<functional>
 #include<iostream>
 #include<iterator>
+#include<list>
 #include<map>
 #include<set>
 #include<string>
+#include<sstream>
 #include<utility>
 #include<vector>
+
+struct Flowerbed
+{
+    size_t num;
+    std::string shape;
+    std::vector<std::string> flowers;
+};
 
 namespace std
 {
 std::ostream& operator<<(std::ostream& out, const std::pair<int, string>& _pair)
 {
     out << _pair.second << " ";
+    return out;
+}
+
+std::ostream& operator<<(std::ostream& out, const Flowerbed& flowerbed)
+{
+    out << flowerbed.num << " " << flowerbed.shape << " ";
+    std::copy(flowerbed.flowers.begin(), flowerbed.flowers.end(), std::ostream_iterator<std::string>(std::cout, " "));
     return out;
 }
 }
@@ -40,6 +57,7 @@ int main()
             }
             case 1:
             {
+                std::cout << "\n################## Task 1 ##################\n";
                 std::set<std::string> riverBank = { "Sandpiper", "Cancer", "Mussel" };
                 std::set<std::string> riverDepth = { "Bull", "Perch", "Mussel" };
                 std::set<std::string> riverUnion;
@@ -75,11 +93,12 @@ int main()
                 std::set_difference(riverBank.begin(), riverBank.end(), riverDepth.begin(), riverDepth.end(), inserter(bankOnly, bankOnly.begin()));
                 std::cout << "\nDifference (Set 1 - Set 2): ";
                 std::copy(bankOnly.begin(), bankOnly.end(), std::ostream_iterator<std::string>(std::cout, " "));
-                std::cout << "\n\n";
+                std::cout << "\n\n############################################\n\n";
                 break;
             }
             case 2:
             {
+                std::cout << "\n################## Task 2 ##################\n";
                 std::multimap<int, std::string> nums =
                 {{ 1, "адзін" },
                     { 1, "один" },
@@ -109,12 +128,13 @@ int main()
                     std::cout << "No such key!\n";
                 }
                 
-                std::cout << "\n";
+                std::cout << "\n############################################\n\n";
                 break;
             }
                 
             case 3:
             {
+                std::cout << "\n################## Task 3 ##################\n";
                 size_t size = 15;
                 std::vector<int> nums(size);
                 
@@ -133,17 +153,91 @@ int main()
                 //bind позволяет изменять количество аргументов и сами аргументы функтора (функции), а placeholders определяет на какую позицию из параметров функтора (функции)
                 std::cout << "\nNumber more x:\n";
                 std::copy_if(nums.begin(), nums.end(), std::ostream_iterator<int>(std::cout, " "), std::bind(std::greater<int>(), std::placeholders::_1, key));
-                std::cout << "\n\n";
+                std::cout << "\n\n############################################\n\n";
                 break;
             }
             case 4:
             {
+                std::cout << "\n################## Task 4 ##################\n";
+                std::list<Flowerbed> list;
+                std::ifstream file("Text.txt");
                 
+                if (file) //проверка на открытие файла
+                {
+                    std::string str;
+                    
+                    while(getline(file, str))
+                    {
+                        Flowerbed flowerbed;
+                        std::istringstream ss(str);
+                        ss >> flowerbed.num >> flowerbed.shape;
+                        std::copy(std::istream_iterator<std::string>(ss), std::istream_iterator<std::string>(), std::inserter(flowerbed.flowers, flowerbed.flowers.begin()));
+                        list.push_back(flowerbed);
+                    }
+                }
+                else
+                {
+                    std::cout << "Error open file!\n";
+                }
+                
+                while (true)
+                {
+                    int choice;
+                    bool flag = false;
+                    std::cout << "Task:\n"
+                    << "(1) print complete information\n"
+                    << "(2) print all types of flowers\n"
+                    << "(3) std::bind\n"
+                    << "(4) flowerbed\n"
+                    << "(0) exit\n"
+                    << "\nEnter number task: ";
+                    std::cin >> choice;
+                    
+                    switch (choice)
+                    {
+                        case 0:
+                        {
+                            flag = true;
+                            break;
+                        }
+                        case 1:
+                        {
+                            std::copy(list.begin(), list.end(), std::ostream_iterator<Flowerbed>(std::cout, "\n"));
+                            break;
+                        }
+                        case 2:
+                        {
+                            std::set<std::string> flowers;
+                            std::for_each(list.begin(), list.end(), [&flowers] (Flowerbed& flowerbed)
+                            {
+                                
+                                std::set_union(flowers.begin(), flowers.end(), flowerbed.flowers.begin(), flowerbed.flowers.end(), flowers, flowers.begin());
+                                
+                            });
+                            
+                            std::copy(flowers.begin(), flowers.end(), std::ostream_iterator<std::string>(std::cout, " "));
+                            break;
+                        }
+                        default:
+                        {
+                            break;
+                        }
+                    }
+                    
+                    if (flag)
+                    {
+                        break;
+                    }
+                }
+                
+                
+                
+            
                 break;
             }
             default:
             {
-                std::cout << "haven job with this number!\n";
+                std::cout << "Havent task with this number!\n";
             }
         }
     }
