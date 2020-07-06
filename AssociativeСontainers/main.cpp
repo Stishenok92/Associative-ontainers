@@ -184,13 +184,13 @@ int main()
                 {
                     int choice;
                     bool flag = false;
-                    std::cout << "Task:\n"
+                    std::cout << "\nOperation:\n"
                     << "(1) print complete information\n"
                     << "(2) print all types of flowers\n"
                     << "(3) std::bind\n"
                     << "(4) flowerbed\n"
                     << "(0) exit\n"
-                    << "\nEnter number task: ";
+                    << "\nEnter number operation: ";
                     std::cin >> choice;
                     
                     switch (choice)
@@ -210,9 +210,7 @@ int main()
                             std::set<std::string> flowers;
                             std::for_each(list.begin(), list.end(), [&flowers] (Flowerbed& flowerbed)
                             {
-                                
-                                std::set_union(flowers.begin(), flowers.end(), flowerbed.flowers.begin(), flowerbed.flowers.end(), flowers, flowers.begin());
-                                
+//                                std::set_union(flowers.begin(), flowers.end(), flowerbed.flowers.begin(), flowerbed.flowers.end(), flowers, flowers.begin());
                             });
                             
                             std::copy(flowers.begin(), flowers.end(), std::ostream_iterator<std::string>(std::cout, " "));
