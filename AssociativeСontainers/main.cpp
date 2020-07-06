@@ -187,8 +187,6 @@ int main()
                     std::cout << "\nOperation:\n"
                     << "(1) print complete information\n"
                     << "(2) print all types of flowers\n"
-                    << "(3) std::bind\n"
-                    << "(4) flowerbed\n"
                     << "(0) exit\n"
                     << "\nEnter number operation: ";
                     std::cin >> choice;
@@ -227,10 +225,7 @@ int main()
                         break;
                     }
                 }
-                
-                
-                
-            
+
                 break;
             }
             default:
