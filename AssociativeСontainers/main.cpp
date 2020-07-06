@@ -185,8 +185,8 @@ int main()
                     int choice;
                     bool flag = false;
                     std::cout << "\nOperation:\n"
-                    << "(1) print complete information\n"
-                    << "(2) print all types of flowers\n"
+                    << "(1) print all information\n"
+                    << "(2) print list flowers\n"
                     << "(0) exit\n"
                     << "\nEnter number operation: ";
                     std::cin >> choice;
@@ -200,18 +200,20 @@ int main()
                         }
                         case 1:
                         {
+                            std::cout << "\nAll information: \n";
                             std::copy(list.begin(), list.end(), std::ostream_iterator<Flowerbed>(std::cout, "\n"));
                             break;
                         }
                         case 2:
                         {
+                            std::cout << "\nList flowers: \n";
                             std::set<std::string> flowers;
                             std::for_each(list.begin(), list.end(), [&flowers] (Flowerbed& flowerbed)
                             {
-//                                std::set_union(flowers.begin(), flowers.end(), flowerbed.flowers.begin(), flowerbed.flowers.end(), flowers, flowers.begin());
+                                std::copy(flowerbed.flowers.begin(), flowerbed.flowers.end(), std::inserter(flowers, flowers.end()));
                             });
-                            
                             std::copy(flowers.begin(), flowers.end(), std::ostream_iterator<std::string>(std::cout, " "));
+                            std::cout << "\n";
                             break;
                         }
                         default:
