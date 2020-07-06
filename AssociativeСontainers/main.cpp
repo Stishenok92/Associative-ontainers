@@ -187,6 +187,7 @@ int main()
                     std::cout << "\nOperation:\n"
                     << "(1) print all information\n"
                     << "(2) print list flowers\n"
+                    << "(3) sort\n"
                     << "(0) exit\n"
                     << "\nEnter number operation: ";
                     std::cin >> choice;
@@ -210,10 +211,21 @@ int main()
                             std::set<std::string> flowers;
                             std::for_each(list.begin(), list.end(), [&flowers] (Flowerbed& flowerbed)
                             {
-                                std::copy(flowerbed.flowers.begin(), flowerbed.flowers.end(), std::inserter(flowers, flowers.end()));
+                                std::copy(flowerbed.flowers.begin(), flowerbed.flowers.end(), std::inserter(flowers, flowers.begin()));
                             });
                             std::copy(flowers.begin(), flowers.end(), std::ostream_iterator<std::string>(std::cout, " "));
                             std::cout << "\n";
+                            break;
+                        }
+                        case 3:
+                        {
+                            list.sort([] (const Flowerbed& a, const Flowerbed& b)
+                            {
+                                return a.shape < b.shape;
+                            });
+                            
+                            std::cout << "\nSort done!\n";
+                            
                             break;
                         }
                         default:
