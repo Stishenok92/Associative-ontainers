@@ -2,6 +2,7 @@
 #include<ctime>
 #include<fstream>
 #include<functional>
+#include<iomanip>
 #include<iostream>
 #include<iterator>
 #include<list>
@@ -29,10 +30,33 @@ std::ostream& operator<<(std::ostream& out, const std::pair<int, string>& _pair)
 
 std::ostream& operator<<(std::ostream& out, const Flowerbed& flowerbed)
 {
-    out << flowerbed.num << " " << flowerbed.shape << " ";
+    out << std::left << std::setw(3) << flowerbed.num << std::setw(9) << flowerbed.shape << " ";
     std::copy(flowerbed.flowers.begin(), flowerbed.flowers.end(), std::ostream_iterator<std::string>(std::cout, " "));
     return out;
 }
+
+std::ostream& operator<<(std::ostream& out, const std::pair<std::string, Flowerbed>& _pair)
+{
+    out << _pair.second;
+    return out;
+}
+
+std::istream& operator>>(std::istream& in, std::pair<std::string, Flowerbed>& _pair)
+{
+    std::cout << "Enter number: ";
+    std::cin >> _pair.second.num;
+    std::cout << "Enter shape: ";
+    std::cin >> _pair.first;
+    _pair.second.shape = _pair.first;
+    std::string str;
+    std::cout << "Enter all flowers via space: ";
+    std::cin.ignore();
+    std::getline(std::cin, str);
+    std::istringstream ss(str);
+    std::copy(std::istream_iterator<std::string>(ss), std::istream_iterator<std::string>(), std::inserter(_pair.second.flowers, _pair.second.flowers.begin()));
+    return in;
+}
+
 }
 
 int main()
@@ -45,7 +69,7 @@ int main()
         << "(2) numbers\n"
         << "(3) std::bind\n"
         << "(4) flowerbed\n"
-        << "(0) exit\n"
+        << "(0) exit program\n"
         << "\nEnter number task: ";
         std::cin >> choice;
         
@@ -151,7 +175,7 @@ int main()
                 std::cin >> key;
                 
                 //bind позволяет изменять количество аргументов и сами аргументы функтора (функции), а placeholders определяет на какую позицию из параметров функтора (функции)
-                std::cout << "\nNumber more x:\n";
+                std::cout << "\nNumbers more " << key << ":\n";
                 std::copy_if(nums.begin(), nums.end(), std::ostream_iterator<int>(std::cout, " "), std::bind(std::greater<int>(), std::placeholders::_1, key));
                 std::cout << "\n\n############################################\n\n";
                 break;
@@ -182,45 +206,46 @@ int main()
                 
                 while (true)
                 {
-                    int choice;
+                    int choise;
                     bool flag = false;
-                    std::cout << "\nOperation:\n"
-                    << "(1) print all information\n"
-                    << "(2) print list flowers\n"
+                    std::cout << "\nOperation to list:\n"
+                    << "(1) print list\n"
+                    << "(2) print flowers\n"
                     << "(3) sort\n"
-                    << "(0) exit\n"
+                    << "(4) list -> multimap\n"
+                    << "(0) exit to menu select tasks\n"
                     << "\nEnter number operation: ";
-                    std::cin >> choice;
+                    std::cin >> choise;
                     
-                    switch (choice)
+                    switch (choise)
                     {
                         case 0:
                         {
                             flag = true;
+                            std::cout << "\n";
                             break;
                         }
                         case 1:
                         {
-                            std::cout << "\nAll information: \n";
+                            std::cout << "\nList: \n";
                             std::copy(list.begin(), list.end(), std::ostream_iterator<Flowerbed>(std::cout, "\n"));
                             break;
                         }
                         case 2:
                         {
-                            std::cout << "\nList flowers: \n";
+                            std::cout << "\nFlowers: \n";
                             std::set<std::string> flowers;
                             std::for_each(list.begin(), list.end(), [&flowers] (Flowerbed& flowerbed)
-                            {
+                                          {
                                 std::copy(flowerbed.flowers.begin(), flowerbed.flowers.end(), std::inserter(flowers, flowers.begin()));
                             });
-                            std::copy(flowers.begin(), flowers.end(), std::ostream_iterator<std::string>(std::cout, " "));
-                            std::cout << "\n";
+                            std::copy(flowers.begin(), flowers.end(), std::ostream_iterator<std::string>(std::cout, "\n"));
                             break;
                         }
                         case 3:
                         {
                             list.sort([] (const Flowerbed& a, const Flowerbed& b)
-                            {
+                                      {
                                 return a.shape < b.shape;
                             });
                             
@@ -228,9 +253,62 @@ int main()
                             
                             break;
                         }
+                        case 4:
+                        {
+                            std::multimap<std::string, Flowerbed> map;
+                            std::for_each(list.begin(), list.end(), [&map] (Flowerbed& flowerbed)
+                                          {
+                                map.emplace(flowerbed.shape, flowerbed); ;
+                            });
+                            
+                            while (true)
+                            {
+                                int choise;
+                                bool flag = false;
+                                std::cout << "\nOperation to multimap:\n"
+                                << "(1) print multimap\n"
+                                << "(2) add object in multimap\n"
+                                << "(0) exit to list\n"
+                                << "\nEnter number operation: ";
+                                std::cin >> choise;
+                                
+                                switch (choise)
+                                {
+                                    case 0:
+                                    {
+                                        flag = true; //сделать преобразование multiset в list
+                                        break;
+                                    }
+                                    case 1:
+                                    {
+                                        std::cout << "\nMultimap: \n";
+                                        std::copy(map.begin(), map.end(), std::ostream_iterator<std::pair<std::string, Flowerbed>>(std::cout, "\n"));
+                                        break;
+                                    }
+                                    case 2:
+                                    {
+                                        std::pair<std::string, Flowerbed> flowerbad;
+                                        std::cin >> flowerbad;
+                                        map.insert(flowerbad);
+                                        break;
+                                    }
+                                    default:
+                                    {
+                                        std::cout << "Havent operation with this number!\n";
+                                    }
+                                }
+                                
+                                if (flag)
+                                {
+                                    break;
+                                }
+                            }
+                            
+                            break;
+                        }
                         default:
                         {
-                            break;
+                            std::cout << "Havent operation with this number!\n";
                         }
                     }
                     
@@ -239,7 +317,7 @@ int main()
                         break;
                     }
                 }
-
+                
                 break;
             }
             default:
