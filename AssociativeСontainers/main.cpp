@@ -30,7 +30,7 @@ std::ostream& operator<<(std::ostream& out, const std::pair<int, string>& _pair)
 
 std::ostream& operator<<(std::ostream& out, const Flowerbed& flowerbed)
 {
-    out << std::left << std::setw(3) << flowerbed.num << std::setw(9) << flowerbed.shape << " ";
+    out << std::left << std::setw(3) << flowerbed.num << std::setw(11) << flowerbed.shape << " ";
     std::copy(flowerbed.flowers.begin(), flowerbed.flowers.end(), std::ostream_iterator<std::string>(std::cout, " "));
     return out;
 }
@@ -209,10 +209,10 @@ int main()
                     int choise;
                     bool flag = false;
                     std::cout << "\nOperation to list:\n"
-                    << "(1) print list\n"
+                    << "(1) print flowerbed\n"
                     << "(2) print flowers\n"
-                    << "(3) sort\n"
-                    << "(4) list -> multimap\n"
+                    << "(3) sort (form flowerbed) \n"
+                    << "(4) list -> map\n"
                     << "(0) exit to menu select tasks\n"
                     << "\nEnter number operation: ";
                     std::cin >> choise;
@@ -227,7 +227,7 @@ int main()
                         }
                         case 1:
                         {
-                            std::cout << "\nList: \n";
+                            std::cout << "\nFlowerbed: \n";
                             std::copy(list.begin(), list.end(), std::ostream_iterator<Flowerbed>(std::cout, "\n"));
                             break;
                         }
@@ -249,13 +249,14 @@ int main()
                                 return a.shape < b.shape;
                             });
                             
-                            std::cout << "\nSort done!\n";
+                            std::cout << "\nFlowerbed: \n";
+                            std::copy(list.begin(), list.end(), std::ostream_iterator<Flowerbed>(std::cout, "\n"));
                             
                             break;
                         }
                         case 4:
                         {
-                            std::multimap<std::string, Flowerbed> map;
+                            std::map<std::string, Flowerbed> map;
                             std::for_each(list.begin(), list.end(), [&map] (Flowerbed& flowerbed)
                                           {
                                 map.emplace(flowerbed.shape, flowerbed); ;
@@ -265,11 +266,14 @@ int main()
                             {
                                 int choise;
                                 bool flag = false;
-                                std::cout << "\nOperation to multimap:\n"
-                                << "(1) print multimap\n"
-                                << "(2) add object\n"
-                                << "(3) edit oblect\n"
-                                << "(0) exit to list\n"
+                                std::cout << "\nOperation to map:\n"
+                                << "(1) print flowerbed\n"
+                                << "(2) add flowerbed\n"
+                                << "(3) edit flowerbed\n"
+                                << "(4) delete flowerbed\n"
+                                << "(5) print shapes\n"
+                                << "(6) print flowerbed no flowers x\n"
+                                << "(0) map -> list\n"
                                 << "\nEnter number operation: ";
                                 std::cin >> choise;
                                 
@@ -277,12 +281,18 @@ int main()
                                 {
                                     case 0:
                                     {
-                                        flag = true; //сделать преобразование multiset в list
+                                        flag = true;
+                                        list.clear();
+                                        std::for_each(map.begin(), map.end(), [&list] (std::pair<std::string, Flowerbed> flowerbed)
+                                        {
+                                            list.push_back(flowerbed.second);
+                                        });
+                                        
                                         break;
                                     }
                                     case 1:
                                     {
-                                        std::cout << "\nMultimap: \n";
+                                        std::cout << "\nFlowerbed: \n";
                                         std::copy(map.begin(), map.end(), std::ostream_iterator<std::pair<std::string, Flowerbed>>(std::cout, "\n"));
                                         break;
                                     }
@@ -295,6 +305,73 @@ int main()
                                     }
                                     case 3:
                                     {
+                                        std::string key;
+                                        std::cout << "Enter key to search for replace (shape): ";
+                                        std::cin >> key;
+                                        
+                                        if (map.find(key) == map.end())
+                                        {
+                                            std::cout << "\nNot such key!\n";
+                                        }
+                                        else
+                                        {
+                                            std::pair<std::string, Flowerbed> flowerbad;
+                                            std::cin >> flowerbad;
+                                            map.erase(key);
+                                            map.insert(flowerbad);
+                                        }
+                                        
+                                        break;
+                                    }
+                                    case 4:
+                                    {
+                                        std::string key;
+                                        std::cout << "Enter key to search for replace (shape): ";
+                                        std::cin >> key;
+                                        
+                                        if (map.find(key) == map.end())
+                                        {
+                                            std::cout << "\nNot such key!\n";
+                                        }
+                                        else
+                                        {
+                                            map.erase(key);
+                                        }
+                                        
+                                        break;
+                                    }
+                                    case 5:
+                                    {
+                                        std::set<std::string> shapes;
+                                        std::for_each(map.begin(), map.end(), [&shapes] (const std::pair<std::string, Flowerbed> flowerbed)
+                                        {
+                                            shapes.insert(flowerbed.first);
+                                        });
+                                        
+                                        std::cout << "\nShapes: \n";
+                                        std::copy(shapes.begin(), shapes.end(), std::ostream_iterator<std::string>(std::cout, "\n"));
+                                        break;
+                                    }
+                                    case 6:
+                                    {
+                                        std::string key;
+                                        std::cout << "Enter flower x: ";
+                                        std::cin >> key;
+                                        std::cout << "\nFlowerbed: \n";
+                                        std::copy_if(map.begin(), map.end(), std::ostream_iterator<std::pair<std::string, Flowerbed>>(std::cout, "\n"), [key] (std::pair<std::string, Flowerbed> flowerbed)
+                                        {
+                                            std::vector<std::string>::iterator it;
+                                            it = find(flowerbed.second.flowers.begin(), flowerbed.second.flowers.end(), key);
+                                            
+                                            if (it == flowerbed.second.flowers.end())
+                                            {
+                                                return true;
+                                            }
+                                            else
+                                            {
+                                                return false;
+                                            }
+                                        } );
                                         
                                         break;
                                     }
