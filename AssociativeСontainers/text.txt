@@ -1,0 +1,6 @@
+1 circle tulip rose  cornflower
+2 square poppy daisy rose lily
+3 star  poppy daisy rose lily tulip
+4 oval tulip rose  cornflower lily
+5 triangle aster rose lily tulip
+6 rectangle poppy
