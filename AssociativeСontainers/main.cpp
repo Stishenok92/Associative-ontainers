@@ -236,7 +236,7 @@ int main()
                             std::cout << "\nFlowers: \n";
                             std::set<std::string> flowers;
                             std::for_each(list.begin(), list.end(), [&flowers] (Flowerbed& flowerbed)
-                                          {
+                            {
                                 std::copy(flowerbed.flowers.begin(), flowerbed.flowers.end(), std::inserter(flowers, flowers.begin()));
                             });
                             std::copy(flowers.begin(), flowers.end(), std::ostream_iterator<std::string>(std::cout, "\n"));
@@ -245,7 +245,7 @@ int main()
                         case 3:
                         {
                             list.sort([] (const Flowerbed& a, const Flowerbed& b)
-                                      {
+                            {
                                 return a.shape < b.shape;
                             });
                             
@@ -258,7 +258,7 @@ int main()
                         {
                             std::map<std::string, Flowerbed> map;
                             std::for_each(list.begin(), list.end(), [&map] (Flowerbed& flowerbed)
-                                          {
+                            {
                                 map.emplace(flowerbed.shape, flowerbed); ;
                             });
                             
@@ -371,7 +371,7 @@ int main()
                                             {
                                                 return false;
                                             }
-                                        } );
+                                        });
                                         
                                         break;
                                     }
