@@ -267,7 +267,8 @@ int main()
                                 bool flag = false;
                                 std::cout << "\nOperation to multimap:\n"
                                 << "(1) print multimap\n"
-                                << "(2) add object in multimap\n"
+                                << "(2) add object\n"
+                                << "(3) edit oblect\n"
                                 << "(0) exit to list\n"
                                 << "\nEnter number operation: ";
                                 std::cin >> choise;
@@ -290,6 +291,11 @@ int main()
                                         std::pair<std::string, Flowerbed> flowerbad;
                                         std::cin >> flowerbad;
                                         map.insert(flowerbad);
+                                        break;
+                                    }
+                                    case 3:
+                                    {
+                                        
                                         break;
                                     }
                                     default:
